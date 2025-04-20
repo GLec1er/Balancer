@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: psql
+    restart: always
+    environment:
+      POSTGRES_USER: balancer
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: balancer
+    ports:
+      - "5454:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+    container_name: fastapi-balancer
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://balancer:password@db:5432/balancer
+    depends_on:
+      - db
+
+  cdn:
+    build:
+      context: .
+      dockerfile: cdn/Dockerfile
+    container_name: fastapi-cdn
+    restart: always
+    ports:
+      - "9000:9000"

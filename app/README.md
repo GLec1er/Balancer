@@ -9,7 +9,3 @@
 uvicorn app.main:app --reload
 
 http://localhost:8000/?video=http://s3.origin-cluster/video/9999/test123.m3u8
-
-
-### Запусти CDN сервер
-uvicorn cdn_server:app --host 0.0.0.0 --port 9000
